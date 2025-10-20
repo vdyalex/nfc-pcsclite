@@ -36,4 +36,5 @@ Desktop.ini
 node_modules/
 
 # built Node.js C++ addon
-/build/
+dist/
+build/

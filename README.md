@@ -1,380 +1,251 @@
-# node-pcsclite
+# **nfc-pcsclite**
 
-[![npm](https://img.shields.io/npm/v/@pokusew/pcsclite.svg)](https://www.npmjs.com/package/@pokusew/pcsclite)
-[![build status](https://img.shields.io/github/actions/workflow/status/pokusew/node-pcsclite/ci.yml?logo=github)](https://github.com/pokusew/node-pcsclite/actions/workflows/ci.yml)
-[![node-pcsclite channel on discord](https://img.shields.io/badge/discord-join%20chat-61dafb.svg?logo=discord&logoColor=white)](https://discord.gg/bg3yazg)
+[![npm](https://img.shields.io/npm/v/nfc-pcsclite.svg)](https://www.npmjs.com/package/nfc-pcsclite)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/nfc-pcsclite/ci.yml?logo=github)](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/ci.yml)
 
-Bindings over pcsclite to access Smart Cards. It works in **Linux**, **macOS** and **Windows**.
+> **Cross-platform NFC library for Node.js**
+> Read and write NFC tags and smart cards using built-in **PC/SC bindings**.
+> Works on **Linux**, **macOS**, and **Windows**.
 
-> 📌 **Looking for library to work easy with NFC tags?**  
-> Then take a look at [nfc-pcsc](https://github.com/pokusew/nfc-pcsc)
-> which offers an easy to use high level API
-> for detecting / reading and writing NFC tags and cards.
-
+---
 
 ## Content
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
+- [Overview](#overview)
 - [Installation](#installation)
-- [Example](#example)
-- [Behavior on different OS](#behavior-on-different-os)
-- [API](#api)
-  - [Class: PCSCLite](#class-pcsclite)
-    - [Event: `error`](#event-error)
-    - [Event: `reader`](#event-reader)
-    - [pcsclite.close()](#pcscliteclose)
-    - [pcsclite.readers](#pcsclitereaders)
-  - [Class: CardReader](#class-cardreader)
-    - [Event: `error`](#event-error-1)
-    - [Event: `end`](#event-end)
-    - [Event: `status`](#event-status)
-    - [reader.connect([options], callback)](#readerconnectoptions-callback)
-    - [reader.disconnect(disposition, callback)](#readerdisconnectdisposition-callback)
-    - [reader.transmit(input, res_len, protocol, callback)](#readertransmitinput-res_len-protocol-callback)
-    - [reader.control(input, control_code, res_len, callback)](#readercontrolinput-control_code-res_len-callback)
-    - [reader.close()](#readerclose)
+  - [Requirements](#requirements)
+    - [Node.js](#nodejs)
+    - [Build tools](#build-tools)
+    - [PC/SC API](#pcsc-api)
+    - [Install package](#install-package)
+- [NFC Tag Handling Flow](#nfc-tag-handling-flow)
+- [Basic Usage](#basic-usage)
+- [Alternative Usage (Manual Processing)](#alternative-usage-manual-processing)
+- [Reading & Writing Data](#reading--writing-data)
 - [FAQ](#faq)
-  - [Can I use this library in my Electron app?](#can-i-use-this-library-in-my-electron-app)
-  - [Are prebuilt binaries provided?](#are-prebuilt-binaries-provided)
-  - [Disabling drivers to make pcsclite working on Linux](#disabling-drivers-to-make-pcsclite-working-on-linux)
-  - [Which Node.js versions are supported?](#which-nodejs-versions-are-supported)
-  - [Can I use this library in my React Native app?](#can-i-use-this-library-in-my-react-native-app)
-- [Frequent errors](#frequent-errors)
-  - [Error: Cannot find module '../build/Release/pcsclite.node'](#error-cannot-find-module-buildreleasepcsclitenode)
+  - [Can I use it in Electron?](#can-i-use-it-in-electron)
+  - [Can I use it in Angular + Electron?](#can-i-use-it-in-angular--electron)
+  - [Do I need Babel?](#do-i-need-babel)
+  - [Supported Node.js versions](#supported-nodejs-versions)
+  - [Can I read NDEF tags?](#can-i-read-ndef-tags)
+  - [React Native support?](#react-native-support)
+- [Common Issues](#common-issues)
+  - [Transaction failed using `CONNECT_MODE_DIRECT`](#transaction-failed-using-connect_mode_direct)
+  - [Authentication Error after Multiple Writes (MIFARE Classic)](#authentication-error-after-multiple-writes-mifare-classic)
+  - [Reading Type 4 tags (Elsys sensors)](#reading-type-4-tags-elsys-sensors)
+- [Disclaimer](#disclaimer)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Overview
+
+`nfc-pcsclite` provides a low-level Node.js interface for NFC operations using PC/SC bindings.
+It supports automatic card detection, UID reading, and communication with **Android HCE** devices.
+
+✅ Supports **card UID auto-reading**
+
+✅ Works with **ACR122 USB reader** and other **PC/SC-compliant devices**
+
+✅ Includes **native pcsclite bindings**
+
+> ⚠️ If card detection fails, check the [Alternative Usage](#alternative-usage-manual-processing) section.
+
+---
 
 ## Installation
 
-**Requirements:** **at least Node.js 8 or newer** (see [this FAQ](#which-nodejs-versions-are-supported) for more info)
+### Requirements
 
-1. **Node Native Modules build tools**
+#### Node.js
 
-    Because this library uses Node Native Modules (C++ Addons),
-    which are automatically built (using [node-gyp](https://github.com/nodejs/node-gyp))
-    when installing via npm or yarn, you need to have installed **C/C++ compiler
-    toolchain and some other tools** depending on your OS.
-    
-    **Please refer to the [node-gyp > Installation](https://github.com/nodejs/node-gyp#installation)**
-    for the list of required tools depending on your OS and steps how to install them.
+Compatible with **Node.js 14 or newer**.
 
-2. **PC/SC API in your OS**
+#### Build tools
 
-    On **macOS** and **Windows** you **don't have to install** anything,
-    **pcsclite API** is provided by the OS.
-    
-    On Linux/UNIX you'd probably need to install pcsclite library and daemon**.
+This package includes native bindings built with **node-gyp**.
+Ensure you have a **C/C++ toolchain** installed for your OS.
+See [node-gyp Installation Guide](https://github.com/nodejs/node-gyp#installation).
 
-    > For example, in Debian/Ubuntu:
-    > ```bash
-    > apt-get install libpcsclite1 libpcsclite-dev
-    > ```
-    > To run any code you will also need to have installed the pcsc daemon:
-    > ```bash
-    > apt-get install pcscd
-    > ```
+#### PC/SC API
 
-3. **Once you have all needed libraries, you can install node-pcsclite using npm:**
+- **macOS / Windows**: Already included.
 
-    ```bash
-    npm install @pokusew/pcsclite --save
-    ```
-    
-    or using Yarn:
-    
-    ```bash
-    yarn add @pokusew/pcsclite
-    ```
+- **Linux / UNIX**: Install manually:
 
+```bash
+apt-get install libpcsclite1 libpcsclite-dev pcscd
+```
 
-## Example
+#### Install package
 
-> 👉 **If you'd prefer an easy to use high level API** for detecting / reading and writing NFC tags and cards,
-> take a look at [nfc-pcsc](https://github.com/pokusew/nfc-pcsc).
+```bash
+# Using npm
+npm install nfc-pcsclite
 
-```javascript
-const pcsclite = require('@pokusew/pcsclite');
+# Using Yarn
+yarn add nfc-pcsclite
+```
 
-const pcsc = pcsclite();
+---
 
-pcsc.on('reader', (reader) => {
+## NFC Tag Handling Flow
 
-    console.log('New reader detected', reader.name);
+When a tag is detected, the following occurs:
 
-    reader.on('error', err => {
-        console.log('Error(', reader.name, '):', err.message);
-    });
+1. Detects the card standard (`TAG_ISO_14443_3` or `TAG_ISO_14443_4`);
+2. Connects to the card;
+3. Depending on `autoProcessing`:
+   - `true` (default): automatically retrieves UID or APDU data; or
+   - `false`: triggers `card` event only, letting you handle transmission manually;
+4. You can then read, write, or send custom commands.
 
-    reader.on('status', (status) => {
+---
 
-        console.log('Status(', reader.name, '):', status);
+## Basic Usage
 
-        // check what has changed
-        const changes = reader.state ^ status.state;
+```js
+import { NFC } from 'nfc-pcsc';
 
-        if (!changes) {
-            return;
-        }
+const nfc = new NFC(); // optional: pass a logger (e.g. Pino, Winston)
 
-        if ((changes & reader.SCARD_STATE_EMPTY) && (status.state & reader.SCARD_STATE_EMPTY)) {
+nfc.on('reader', reader => {
+  console.log(`${reader.reader.name} device attached`);
 
-            console.log("card removed");
+  reader.on('card', card => {
+    console.log(`${reader.reader.name} card detected`, card);
+  });
 
-            reader.disconnect(reader.SCARD_LEAVE_CARD, err => {
+  reader.on('card.off', card => {
+    console.log(`${reader.reader.name} card removed`, card);
+  });
 
-                if (err) {
-                    console.log(err);
-                    return;
-                }
+  reader.on('error', err => {
+    console.error(`${reader.reader.name} error`, err);
+  });
 
-                console.log('Disconnected');
-
-            });
-
-        }
-        else if ((changes & reader.SCARD_STATE_PRESENT) && (status.state & reader.SCARD_STATE_PRESENT)) {
-
-            console.log("card inserted");
-
-            reader.connect({ share_mode: reader.SCARD_SHARE_SHARED }, (err, protocol) => {
-
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                console.log('Protocol(', reader.name, '):', protocol);
-
-                reader.transmit(Buffer.from([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, (err, data) => {
-
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-
-                    console.log('Data received', data);
-                    reader.close();
-                    pcsc.close();
-
-                });
-
-            });
-
-        }
-
-    });
-
-    reader.on('end', () => {
-        console.log('Reader', reader.name, 'removed');
-    });
-
+  reader.on('end', () => {
+    console.log(`${reader.reader.name} device removed`);
+  });
 });
 
-pcsc.on('error', err => {
-    console.log('PCSC error', err.message);
+nfc.on('error', err => {
+  console.error('An error occurred', err);
 });
 ```
 
+---
 
-## Behavior on different OS
+## Alternative Usage (Manual Processing)
 
-TODO document
+```js
+import { NFC } from 'nfc-pcsc';
 
+const nfc = new NFC();
 
-## API
+nfc.on('reader', reader => {
+  reader.autoProcessing = false;
 
-### Class: PCSCLite
+  console.log(`${reader.reader.name} device attached`);
 
-The PCSCLite object is an EventEmitter that notifies the existence of Card Readers.
+  reader.on('card', card => {
+    console.log(`${reader.reader.name} card inserted`, card);
 
-#### Event: `error`
+    // Send custom APDU commands using reader.transmit()
+  });
+});
+```
 
-* *err* `Error Object`. The error.
+---
 
-#### Event: `reader`
+## Reading & Writing Data
 
-* *reader* `CardReader`. A CardReader object associated to the card reader detected
+Example with MIFARE Ultralight tag:
 
-Emitted whenever a new card reader is detected.
+```js
+reader.on('card', async card => {
+  try {
+    const data = await reader.read(4, 12);
+    console.log('Data read:', data.toString());
+  } catch (err) {
+    console.error('Error reading data', err);
+  }
 
-#### pcsclite.close()
+  try {
+    const text = 'Bright minds build code';
+    const buffer = Buffer.alloc(12, 0);
+    buffer.write(text);
+    await reader.write(4, buffer);
+    console.log('Data written');
+  } catch (err) {
+    console.error('Error writing data', err);
+  }
+});
+```
 
-It frees the resources associated with this PCSCLite instance. At a low level it
-calls [`SCardCancel`](https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6) so it stops watching for new readers.
-
-#### pcsclite.readers
-
-An object containing all detected readers by name. Updated as readers are attached and removed.
-
-### Class: CardReader
-
-The CardReader object is an EventEmitter that allows to manipulate a card reader.
-
-#### Event: `error`
-
-* *err* `Error Object`. The error.
-
-#### Event: `end`
-
-Emitted when the card reader has been removed.
-
-#### Event: `status`
-
-* *status* `Object`.
-    * *state* The current status of the card reader as returned by [`SCardGetStatusChange`](https://pcsclite.apdu.fr/api/group__API.html#ga33247d5d1257d59e55647c3bb717db24)
-    * *atr* ATR of the card inserted (if any)
-
-Emitted whenever the status of the reader changes.
-
-#### reader.connect([options], callback)
-
-* *options* `Object` Optional
-    * *share_mode* `Number` Shared mode. Defaults to `SCARD_SHARE_EXCLUSIVE`
-    * *protocol* `Number` Preferred protocol. Defaults to `SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1`
-* *callback* `Function` called when connection operation ends
-    * *error* `Error`
-    * *protocol* `Number` Established protocol to this connection.
-
-Wrapper around [`SCardConnect`](https://pcsclite.apdu.fr/api/group__API.html#ga4e515829752e0a8dbc4d630696a8d6a5).
-Establishes a connection to the reader.
-
-#### reader.disconnect(disposition, callback)
-
-* *disposition* `Number`. Reader function to execute. Defaults to `SCARD_UNPOWER_CARD`
-* *callback* `Function` called when disconnection operation ends
-    * *error* `Error`
-
-Wrapper around [`SCardDisconnect`](https://pcsclite.apdu.fr/api/group__API.html#ga4be198045c73ec0deb79e66c0ca1738a).
-Terminates a connection to the reader.
-
-#### reader.transmit(input, res_len, protocol, callback)
-
-* *input* `Buffer` input data to be transmitted
-* *res_len* `Number`. Max. expected length of the response
-* *protocol* `Number`. Protocol to be used in the transmission
-* *callback* `Function` called when transmit operation ends
-    * *error* `Error`
-    * *output* `Buffer`
-
-Wrapper around [`SCardTransmit`](https://pcsclite.apdu.fr/api/group__API.html#ga9a2d77242a271310269065e64633ab99).
-Sends an APDU to the smart card contained in the reader connected to.
-
-#### reader.control(input, control_code, res_len, callback)
-
-* *input* `Buffer` input data to be transmitted
-* *control_code* `Number`. Control code for the operation
-* *res_len* `Number`. Max. expected length of the response
-* *callback* `Function` called when control operation ends
-    * *error* `Error`
-    * *output* `Buffer`
-
-Wrapper around [`SCardControl`](https://pcsclite.apdu.fr/api/group__API.html#gac3454d4657110fd7f753b2d3d8f4e32f).
-Sends a command directly to the IFD Handler (reader driver) to be processed by the reader.
-
-#### reader.close()
-
-It frees the resources associated with this CardReader instance.
-At a low level it calls [`SCardCancel`](https://pcsclite.apdu.fr/api/group__API.html#gaacbbc0c6d6c0cbbeb4f4debf6fbeeee6) so it stops watching for the reader status changes.
-
+---
 
 ## FAQ
 
-### Can I use this library in my [Electron](https://www.electronjs.org/) app?
+### Can I use it in Electron?
 
-**Yes, you can!** It works well.
+Yes. It works with Electron and other Node.js environments that support native modules.
 
-But please read carefully [Using Native Node Modules](https://electron.atom.io/docs/tutorial/using-native-node-modules/) guide in Electron documentation to fully understand the problematic.
+See [Electron’s guide on native modules](https://www.electronjs.org/docs/latest/tutorial/using-native-node-modules).
 
-**Note**, that because of Node Native Modules, you must build your app on target platform (you must run Windows build on Windows machine, etc.).  
-You can use CI/CD server to build your app for certain platforms.  
-For Windows, I recommend you to use [AppVeyor](https://appveyor.com/).  
-For macOS and Linux build, there are plenty of services to choose from, for example [CircleCI](https://circleci.com/), [Travis CI](https://travis-ci.com/) [CodeShip](https://codeship.com/).
+### Can I use it in Angular + Electron?
 
-### Are prebuilt binaries provided?
+Yes. You’ll need to update your `package.json` and `webpack.config.js` per [this issue comment](https://github.com/pokusew/nfc-pcsc/issues/24#issuecomment-327038188).
 
-No, because it brings more problems than it solves. The C++ code (Node Native Modules, C++ Addons) is built automatically during installation (using [node-gyp](https://github.com/nodejs/node-gyp)).
+### Do I need Babel?
 
-That means that cross-compilation is not possible by default. If you want to use this library in your [Electron](https://www.electronjs.org/) or [NW.js](https://nwjs.io/), see [Can I use this library in my Electron app?](#can-i-use-this-library-in-my-electron-app).
+No. The library is already transpiled to support Node.js 14+.
 
-### Disabling drivers to make pcsclite working on Linux
+### Supported Node.js versions
 
-In case there is another driver blocking the usb bus, you won't be able to access the NFC reader until you disable it. First, plug in your reader and check, which driver is being used:
-```console
-$ lsusb -t
-/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/12p, 480M
-    |__ Port 3: Dev 6, If 0, Class=Chip/SmartCard, Driver=pn533, 12M
-        ...
-```
-In my case, there is a `pn533` driver loaded by default. Now find the dependency tree of that driver:
-```console
-$ lsmod | grep pn533
-Module                  Size  Used by
-pn533_usb              20480  0
-pn533                  45056  1 pn533_usb
-nfc                   131072  1 pn533
+`14.x`, `16.x`, `18.x`, `20.x`, `22.x`
 
-```
-We see, that there are drivers `nfc`, `pn533` and `pn533_usb` we need to disable. Create file in `/etc/modprobe.d/` with the following content:
-```console
-$ cat /etc/modprobe.d/nfc-blacklist.conf
-blacklist pn533_usb
-blacklist pn533
-blacklist nfc
-```
-After reboot, there will be no driver blocking the usb bus anymore, so we can finally enable and start the pscs deamon:
-```
-# systemctl enable pcscd
-# systemctl start pcscd
+### Can I read NDEF tags?
+
+Yes. Use `reader.read()` and parse the raw bytes with [TapTrack/NdefJS](https://github.com/TapTrack/NdefJS).
+
+### React Native support?
+
+No. `nfc-pcsclite` depends on Node.js native bindings and PC/SC APIs, unavailable in mobile runtimes.
+
+---
+
+## Common Issues
+
+### Transaction failed using `CONNECT_MODE_DIRECT`
+
+See [explanation](https://github.com/pokusew/nfc-pcsc/issues/13#issuecomment-302482621).
+
+### Authentication Error after Multiple Writes (MIFARE Classic)
+
+See [instructions](https://github.com/pokusew/nfc-pcsc/issues/16#issuecomment-304989178).
+
+### Reading Type 4 tags (Elsys sensors)
+
+Set `readClass` to `0x00` in:
+
+```js
+reader.read(blockNumber, length, blockSize, packetSize, 0x00);
 ```
 
-### Which Node.js versions are supported?
+See [discussion](https://github.com/pokusew/nfc-pcsc/pull/55#issuecomment-450120232).
 
-@pokusew/pcsclite officially supports the following Node.js versions: **8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 16.x, 18.x, 20.x**.
+---
 
-### Can I use this library in my React Native app?
+## Disclaimer
 
-Short answer: **NO**
+This library revives maintenance over an abandoned project. For a high-level API, see [nfc-pcsc](https://github.com/pokusew/nfc-pcsc).
 
-Explanation: **Mobile support is virtually impossible** because @pokusew/pcsclite uses **Node Native Modules**
-to access system **PC/SC API**. So the **Node.js runtime and PC/SC API** are required for @pokusew/pcsclite to run.
-That makes it possible to use it on the most of OS (Windows, macOS, Linux) **directly in Node.js**
-or in **Electron.js and NW.js** desktop apps. On the other hand, these requirements are not normally met on mobile devices.
-On top of that, React Native does not contain any Node.js runtime.
-
-
-## Frequent errors
-
-### Error: Cannot find module '../build/Release/pcsclite.node'
-
-@pokusew/pcsclite uses **Node Native Modules** (Node.js C++ Addon) to access PC/SC API (pcsclite).
-The Node.js native C++ addon is built during installation via [node-gyp](https://github.com/nodejs/node-gyp)
-(see package.json > scripts > [install](https://github.com/pokusew/node-pcsclite/blob/master/package.json#L37)).
-When you see the error `Cannot find module '../build/Release/pcsclite.node'`, something probably
-**went wrong during the installation**.
-
-Follow the steps below to resolve your problem:
-1. If **there are any errors** in the output of the `npm install` resp. `yarn install`,
-    * **ensure you meet all the requirements** described in the [Installation](#installation) section of this README.
-        Then try reinstalling @pokusew/pcsclite (npm uninstall / yarn remove and then npm install / yarn add).
-    * **If the problem persists**, [open a new issue](https://github.com/pokusew/node-pcsclite/issues/new)
-        and be sure to include the output of the `npm install` resp. `yarn install`
-        and the details about your platform, OS, Node.js version and npm/yarn version.
-2. If **there are no errors** during the installation,
-    * then try reinstalling @pokusew/pcsclite (npm uninstall / yarn remove and then npm install / yarn add).
-    * If it does not help, then examine the contents of the folder `node_modules/@pokusew/pcsclite` in your project
-        (in case you installed @pokusew/pcsclite as a dependency). There should be a `build` folder with
-        a `Release` folder inside. In the `Release` folder, there should be a `pcsclite.node` file.
-        It is possible that this file is somewhere else. Whether you find the file somewhere or not,
-        please [open a new issue](https://github.com/pokusew/node-pcsclite/issues/new)
-        and describe the problem and be sure to include the details
-        about your platform, OS, Node.js version and npm/yarn version.
-
+---
 
 ## License
 
-[ISC](/LICENSE.md)
+Released under the [MIT License](./LICENSE.md).

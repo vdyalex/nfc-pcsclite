@@ -1,6 +1,7 @@
 ISC License
 
-Copyright (c) 2016-present, Martin Endler  
+Copyright (c) 2024-present, Alex Azevedo <alexndreazevedo@gmail.com>
+Copyright (c) 2016-present, Martin Endler
 Copyright (c) 2013-present, Santiago Gimeno <santiago.gimeno@gmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any
