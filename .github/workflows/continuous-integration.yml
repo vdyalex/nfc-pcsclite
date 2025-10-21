@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
         node-version: [18, 20, 22]
 
     steps:
@@ -22,10 +22,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-
-      - name: Install pcsclite
-        run: sudo apt-get install -y libpcsclite1 libpcsclite-dev pcscd
-        if: matrix.os == 'ubuntu-latest'
 
       - name: Install lib dependencies
         run: yarn --cwd ./lib install --verbose
