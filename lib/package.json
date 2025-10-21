@@ -14,7 +14,7 @@
   "scripts": {
     "postinstall": "node-gyp rebuild",
     "build": "node-gyp configure build",
-    "test": "mocha --project tsconfig.json 'test/**/*.spec.js' --exit"
+    "test": "mocha --project tsconfig.json \"test/**/*.spec.js\" --exit"
   },
   "dependencies": {
     "node-addon-api": "*"

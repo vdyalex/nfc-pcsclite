@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "mocha --require ts-node/register --require test/setup.ts --project tsconfig.json 'test/**/*.spec.ts' --exit",
+    "test": "mocha --require ts-node/register --require test/setup.ts --project tsconfig.json \"test/**/*.spec.ts\" --exit",
     "prepublish": "doctoc README.md"
   },
   "files": [
