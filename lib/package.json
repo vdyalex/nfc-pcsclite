@@ -1,7 +1,6 @@
 {
   "name": "pcsclite",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
   "gypfile": true,
   "description": "Bindings over PC/SC to access Smart Cards",
@@ -21,7 +20,6 @@
     "node-addon-api": "*"
   },
   "devDependencies": {
-    "chai": "^6.2.0",
     "mocha": "^11.7.4",
     "sinon": "^21.0.0"
   }
