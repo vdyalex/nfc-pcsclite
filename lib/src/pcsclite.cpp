@@ -44,13 +44,13 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
     }
     else
     {
-      Napi::Error::New(env, error_msg("SCardEstablishContext")).ThrowAsJavaScriptException();
+      Napi::Error::New(env, error_msg("SCardEstablishContext", 0)).ThrowAsJavaScriptException();
     }
     CloseServiceHandle(scm);
   }
   else
   {
-    Napi::Error::New(env, error_msg("SCardEstablishContext")).ThrowAsJavaScriptException();
+    Napi::Error::New(env, error_msg("SCardEstablishContext", 0)).ThrowAsJavaScriptException();
   }
 #endif
 
