@@ -12,8 +12,8 @@
     "./binding.gyp"
   ],
   "scripts": {
-    "postinstall": "node-gyp rebuild --verbose",
-    "build": "node-gyp clean configure build",
+    "postinstall": "node-gyp rebuild --verbose --msvs_version=2022",
+    "build": "node-gyp clean configure build --verbose",
     "test": "mocha --exit"
   },
   "dependencies": {

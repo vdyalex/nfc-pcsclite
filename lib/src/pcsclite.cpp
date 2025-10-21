@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "pcsclite.h"
 #include "common.h"
 
@@ -31,21 +33,69 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   assert(uv_mutex_init(&m_mutex) == 0);
   assert(uv_cond_init(&m_cond) == 0);
 
+  std::cout << "pcsclite native module initialized" << std::endl;
+
 #ifdef _WIN32
+  std::cout << "attempt to start the Smart Card service without blocking" << std::endl;
+
   // Attempt to start the Smart Card service without blocking
   SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICE);
   if (scm)
   {
+    std::cout << "smart card manager available" << std::endl;
+
     SC_HANDLE service = OpenService(scm, "SCardSvr", SERVICE_START);
-    if (service)
+    SERVICE_STATUS_PROCESS status = {};
+    DWORD bytesNeeded = 0;
+
+    // Try to start the service (non-blocking)
+    if (StartService(service, 0, NULL))
     {
-      StartService(service, 0, NULL);
-      CloseServiceHandle(service);
+      std::cout << "Smart Card service start requested" << std::endl;
     }
     else
     {
-      Napi::Error::New(env, error_msg("SCardEstablishContext", 0)).ThrowAsJavaScriptException();
+      DWORD err = GetLastError();
+      if (err == ERROR_SERVICE_ALREADY_RUNNING)
+      {
+        std::cout << "Smart Card service is already running" << std::endl;
+      }
+      else
+      {
+        std::cout << "Failed to start Smart Card service (" << err << ")" << std::endl;
+      }
     }
+
+    // Now, actively poll until it is really running
+    for (int i = 0; i < 10; ++i)
+    {
+      if (!QueryServiceStatusEx(service,
+                                SC_STATUS_PROCESS_INFO,
+                                reinterpret_cast<LPBYTE>(&status),
+                                sizeof(status),
+                                &bytesNeeded))
+      {
+        std::cout << "QueryServiceStatusEx failed (" << GetLastError() << ")" << std::endl;
+        break;
+      }
+
+      if (status.dwCurrentState == SERVICE_RUNNING)
+      {
+        std::cout << "Smart Card service is now running" << std::endl;
+        break;
+      }
+
+      if (status.dwCurrentState == SERVICE_STOPPED)
+      {
+        std::cout << "Smart Card service stopped unexpectedly" << std::endl;
+        break;
+      }
+
+      // Wait half a second before checking again
+      Sleep(100);
+    }
+
+    CloseServiceHandle(service);
     CloseServiceHandle(scm);
   }
   else
@@ -55,39 +105,25 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
 #endif
 
   LONG result;
-  // TODO: consider removing this do-while Windows workaround that should not be needed anymore
-  do
-  {
-    // TODO: make dwScope (now hard-coded to SCARD_SCOPE_SYSTEM) customisable
-    result = SCardEstablishContext(SCARD_SCOPE_SYSTEM,
-                                   NULL,
-                                   NULL,
-                                   &m_card_context);
-  } while (result == static_cast<LONG>(SCARD_E_NO_SERVICE) ||
-           result == static_cast<LONG>(SCARD_E_SERVICE_STOPPED));
 
-  if (result != SCARD_S_SUCCESS)
+  std::cout << "connected to the smart card" << std::endl;
+
+  m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
+  m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
+  result = SCardGetStatusChange(m_card_context,
+                                0,
+                                &m_card_reader_state,
+                                1);
+
+  if ((result != SCARD_S_SUCCESS) && (result != static_cast<LONG>(SCARD_E_TIMEOUT)))
   {
-    Napi::Error::New(env, error_msg("SCardEstablishContext", result)).ThrowAsJavaScriptException();
-    return;
+    std::cout << "failed connection with the smart card" << std::endl;
+    Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
   }
   else
   {
-    m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
-    m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
-    result = SCardGetStatusChange(m_card_context,
-                                  0,
-                                  &m_card_reader_state,
-                                  1);
-
-    if ((result != SCARD_S_SUCCESS) && (result != static_cast<LONG>(SCARD_E_TIMEOUT)))
-    {
-      Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
-    }
-    else
-    {
-      m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
-    }
+    std::cout << "successfully connected to the smart card" << std::endl;
+    m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
   }
 }
 

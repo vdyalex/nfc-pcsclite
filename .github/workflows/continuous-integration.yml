@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
         node-version: [18, 20, 22]
 
     steps:
@@ -23,24 +23,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
 
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y build-essential python3
+
+      - name: Install pcsclite on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y libpcsclite1 libpcsclite-dev pcscd
+
       - name: Install lib dependencies
         run: yarn --cwd ./lib install --verbose
-
-      - run: objdump -t lib\build\Release\pcsclite.node | grep Init
-        if: matrix.os == 'windows-latest'
-        continue-on-error: true
-
-      - run: node -p "process.versions.modules"
-        if: matrix.os == 'windows-latest'
-        continue-on-error: true
-
-      - run: objdump -t pcsclite.node | findstr version
-        if: matrix.os == 'windows-latest'
-        continue-on-error: true
-
-      - run: node -e "console.log(require('./lib/build/Release/pcsclite.node'))"
-        if: matrix.os == 'windows-latest'
-        continue-on-error: true
 
       - name: Run lib tests
         run: yarn --cwd ./lib test
