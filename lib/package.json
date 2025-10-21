@@ -1,6 +1,7 @@
 {
   "name": "pcsclite",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "gypfile": true,
   "description": "Bindings over PC/SC to access Smart Cards",
