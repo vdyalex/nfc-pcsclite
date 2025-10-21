@@ -12,7 +12,7 @@
     "./binding.gyp"
   ],
   "scripts": {
-    "postinstall": "node-gyp rebuild",
+    "postinstall": "node-gyp rebuild --verbose",
     "build": "node-gyp configure build",
     "test": "mocha --exit"
   },
