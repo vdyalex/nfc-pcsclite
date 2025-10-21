@@ -1,10 +1,10 @@
-name: CI
+name: Continous Integration
 
 on: [push, pull_request]
 
 jobs:
 
-  build:
+  Build:
     timeout-minutes: 5
     runs-on: ${{ matrix.os }}
     strategy:

@@ -1,7 +1,7 @@
 # **nfc-pcsclite**
 
 [![npm](https://img.shields.io/npm/v/nfc-pcsclite.svg)](https://www.npmjs.com/package/nfc-pcsclite)
-[![CI](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/ci.yml/badge.svg)](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/ci.yml)
+[![CI](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/continuous-integration.yml)
 ![GitHub contributors](https://img.shields.io/github/contributors/vdyalex/nfc-pcsclite)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/vdyalex/nfc-pcsclite)
 ![GitHub License](https://img.shields.io/github/license/vdyalex/nfc-pcsclite)
