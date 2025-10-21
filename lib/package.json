@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "postinstall": "node-gyp rebuild --verbose",
-    "build": "node-gyp configure build",
+    "build": "node-gyp clean configure build",
     "test": "mocha --exit"
   },
   "dependencies": {

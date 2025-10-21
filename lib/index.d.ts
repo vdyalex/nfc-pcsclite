@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
 export type ConnectOptions = {
   share_mode?: number;
@@ -11,10 +11,10 @@ export type Status = {
 };
 
 export interface PCSCLite extends EventEmitter {
-  on(type: "error", listener: (error: any) => void): this;
-  once(type: "error", listener: (error: any) => void): this;
-  on(type: "reader", listener: (reader: CardReader) => void): this;
-  once(type: "reader", listener: (reader: CardReader) => void): this;
+  on(type: 'error', listener: (error: any) => void): this;
+  once(type: 'error', listener: (error: any) => void): this;
+  on(type: 'reader', listener: (reader: CardReader) => void): this;
+  once(type: 'reader', listener: (reader: CardReader) => void): this;
   close(): void;
   readers: Record<string, CardReader>;
 }
@@ -64,21 +64,21 @@ export interface CardReader extends EventEmitter {
   state: number;
   connected: boolean;
 
-  on(type: "error", listener: ErrorListener): this;
-  once(type: "error", listener: ErrorListener): this;
+  on(type: 'error', listener: ErrorListener): this;
+  once(type: 'error', listener: ErrorListener): this;
 
-  on(type: "end", listener: EndListener): this;
-  once(type: "end", listener: EndListener): this;
+  on(type: 'end', listener: EndListener): this;
+  once(type: 'end', listener: EndListener): this;
 
-  on(type: "status", listener: StatusListener): this;
-  once(type: "status", listener: StatusListener): this;
+  on(type: 'status', listener: StatusListener): this;
+  once(type: 'status', listener: StatusListener): this;
 
   SCARD_CTL_CODE(code: number): number;
 
   get_status(callback: StatusCallback): void;
 
   connect(callback: ConnectCallback): void;
-  connect(options: ConnectOptions,callback: ConnectCallback): void;
+  connect(options: ConnectOptions, callback: ConnectCallback): void;
 
   disconnect(callback: DisconnectCallback): void;
   disconnect(disposition: number, callback: DisconnectCallback): void;
@@ -87,19 +87,19 @@ export interface CardReader extends EventEmitter {
     data: Buffer,
     length: number,
     protocol: number,
-    callback: PayloadCallback
+    callback: PayloadCallback,
   ): void;
 
   control(
     data: Buffer,
     code: number,
     length: number,
-    callback: PayloadCallback
+    callback: PayloadCallback,
   ): void;
 
   close(): void;
 }
 
-declare function pcsc(): PCSCLite;
+declare function pcsc(timeout?: number): PCSCLite;
 
 export = pcsc;
