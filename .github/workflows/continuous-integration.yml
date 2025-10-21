@@ -31,6 +31,30 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y libpcsclite1 libpcsclite-dev pcscd
 
+      - name: Enable Smart Card services
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Write-Host "Starting core Smart Card services..."
+
+          # Smart Card Resource Manager
+          Set-Service -Name SCardSvr -StartupType Automatic
+          Start-Service -Name SCardSvr
+
+          # Smart Card Device Enumeration
+          Set-Service -Name ScDeviceEnum -StartupType Automatic
+          Start-Service -Name ScDeviceEnum
+
+          # Confirm status
+          Get-Service SCardSvr, ScDeviceEnum | Select Name, Status, StartType | Format-Table -AutoSize
+
+      - name: Verify Smart Card availability
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Write-Host "Listing Smart Card devices..."
+          Get-PnpDevice | Where-Object { $_.FriendlyName -like "*smart*" -or $_.Class -eq "SmartCardReader" }
+
       - name: Install lib dependencies
         run: yarn --cwd ./lib install --verbose
 
