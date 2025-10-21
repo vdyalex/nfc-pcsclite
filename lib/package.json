@@ -14,7 +14,7 @@
   "scripts": {
     "postinstall": "node-gyp rebuild",
     "build": "node-gyp configure build",
-    "test": "mocha --exit"
+    "test": "mocha --project tsconfig.json 'test/**/*.spec.js' --exit"
   },
   "dependencies": {
     "node-addon-api": "*"
@@ -23,13 +23,5 @@
     "chai": "^6.2.0",
     "mocha": "^11.7.4",
     "sinon": "^21.0.0"
-  },
-  "mocha": {
-    "extension": [
-      "js"
-    ],
-    "spec": "test/**/*.spec.js",
-    "timeout": 5000,
-    "recursive": true
   }
 }

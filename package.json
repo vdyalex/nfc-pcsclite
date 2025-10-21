@@ -38,9 +38,8 @@
     }
   ],
   "scripts": {
-    "build": "yarn --cwd ./lib build",
-    "compile": "tsc -p tsconfig.build.json",
-    "test": "mocha --exit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "mocha --require ts-node/register --require test/setup.ts --project tsconfig.json 'test/**/*.spec.ts' --exit",
     "prepublish": "doctoc README.md"
   },
   "files": [
@@ -66,15 +65,5 @@
   },
   "peerDependencies": {
     "node-gyp": "*"
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register",
-      "test/setup.ts"
-    ],
-    "extension": [
-      "ts"
-    ],
-    "spec": "test/**/*.spec.ts"
   }
 }
