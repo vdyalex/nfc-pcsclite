@@ -6,7 +6,7 @@ export interface Logger {
 }
 
 export const defaultLogger: Logger = {
-  info: console.log,
+  info: console.info,
   warn: console.warn,
   error: console.error,
   debug: console.debug,

@@ -39,10 +39,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "clean": "rimraf dist",
-    "rebuild": "yarn clean && yarn build",
     "test": "mocha --exit",
-    "prepublish": "doctoc README.md"
+    "prepublishOnly": "doctoc README.md"
   },
   "files": [
     "dist"
@@ -51,16 +49,13 @@
     "pcsclite": "file:./lib"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.11",
     "@types/mocha": "^10.0.10",
     "@types/mock-require": "^3.0.0",
-    "@types/node": "^14",
-    "chai": "^5.1.1",
+    "@types/node": "^18",
     "doctoc": "^2.2.1",
     "mocha": "^11.0.1",
     "mock-require": "^3.0.3",
     "prettier": "^3.5.3",
-    "rimraf": "^6.0.1",
     "should": "^13.2.3",
     "sinon": "^16.0.0",
     "ts-node": "^10.9.2",
@@ -68,15 +63,5 @@
   },
   "peerDependencies": {
     "node-gyp": "*"
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register",
-      "test/setup.ts"
-    ],
-    "extension": [
-      "ts"
-    ],
-    "spec": "test/**/*.spec.ts"
   }
 }

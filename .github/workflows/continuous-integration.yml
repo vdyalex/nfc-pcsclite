@@ -1,0 +1,60 @@
+name: Continous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  Build:
+    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        node-version: [18, 20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y build-essential python3
+
+      - name: Install pcsclite on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y libpcsclite1 libpcsclite-dev pcscd
+
+      - name: Install lib dependencies
+        run: yarn --cwd ./lib install --verbose
+
+      # Currently running tests only on MacOS
+      - name: Run lib tests
+        if: matrix.os == 'macos-latest'
+        run: yarn --cwd ./lib test
+
+      - name: Build lib
+        run: yarn --cwd ./lib build
+
+      - name: Install package dependencies
+        run: yarn install --verbose
+
+      # Currently running tests only on MacOS
+      - name: Run package tests
+        if: matrix.os == 'macos-latest'
+        run: yarn test
+
+      - name: Build package
+        run: yarn build

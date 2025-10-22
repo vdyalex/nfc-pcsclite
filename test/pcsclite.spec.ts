@@ -1,8 +1,8 @@
 import mock from 'mock-require';
-import { expect } from 'chai';
 
 // mock pcsclite to allow to simulate cards
 import pcscliteMock from './mock/pcsclite';
+import assert from 'assert';
 
 mock('pcsclite', pcscliteMock);
 
@@ -12,6 +12,6 @@ describe('Smoke', () => {
   it('should properly instantiate the NFC class', () => {
     const nfc = new NFC();
 
-    expect(nfc).to.instanceOf(NFC);
+    assert.ok(nfc instanceof NFC);
   });
 });

@@ -1,7 +1,10 @@
 # **nfc-pcsclite**
 
 [![npm](https://img.shields.io/npm/v/nfc-pcsclite.svg)](https://www.npmjs.com/package/nfc-pcsclite)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/nfc-pcsclite/ci.yml?logo=github)](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/ci.yml)
+[![CI](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/vdyalex/nfc-pcsclite/actions/workflows/continuous-integration.yml)
+![GitHub contributors](https://img.shields.io/github/contributors/vdyalex/nfc-pcsclite)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/vdyalex/nfc-pcsclite)
+![GitHub License](https://img.shields.io/github/license/vdyalex/nfc-pcsclite)
 
 > **Cross-platform NFC library for Node.js**
 > Read and write NFC tags and smart cards using built-in **PC/SC bindings**.
@@ -202,11 +205,11 @@ Yes. You’ll need to update your `package.json` and `webpack.config.js` per [th
 
 ### Do I need Babel?
 
-No. The library is already transpiled to support Node.js 14+.
+No. The library is already transpiled to support Node.js 18+.
 
 ### Supported Node.js versions
 
-`14.x`, `16.x`, `18.x`, `20.x`, `22.x`
+`18.x`, `20.x`, `22.x`
 
 ### Can I read NDEF tags?
 

@@ -21,13 +21,15 @@
       "defines": [
         "NAPI_CPP_EXCEPTIONS"
       ],
+      "include_dirs": [
+        "<!@(node -p \"require('node-addon-api').include\")"
+      ],
       "conditions": [
         [
           "OS=='linux'",
           {
             "include_dirs": [
-              "/usr/include/PCSC",
-              "<!@(node -p \"require('node-addon-api').include\")"
+              "/usr/include/PCSC"
             ],
             "link_settings": {
               "libraries": [
@@ -49,9 +51,6 @@
               "-framework",
               "PCSC"
             ],
-            "include_dirs": [
-              "<!@(node -p \"require('node-addon-api').include\")"
-            ],
             "xcode_settings": {
               "GCC_SYMBOLS_PRIVATE_EXTERN": "YES"
             }
@@ -61,10 +60,15 @@
           "OS=='win'",
           {
             "libraries": [
-              "-lWinSCard"
+              "WinSCard.lib"
             ],
-            "include_dirs": [
-              "<!@(node -p \"require('node-addon-api').include\")"
+            "msvs_settings": {
+              "VCCLCompilerTool": {
+                "RuntimeLibrary": 2
+              }
+            },
+            "defines": [
+              "USING_WIN_DELAY_LOAD_HOOK"
             ]
           }
         ]
