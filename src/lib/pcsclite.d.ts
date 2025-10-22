@@ -1,4 +1,6 @@
-import { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
+
+import { Maybe } from '../utils';
 
 export type ConnectOptions = {
   share_mode?: number;

@@ -1,3 +1,5 @@
+import type { Maybe, Nullable } from './utils';
+
 export const UNKNOWN_ERROR = 'unknown_error';
 
 export class BaseError extends Error {

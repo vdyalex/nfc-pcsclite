@@ -1,11 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src", "package", "*.d.ts"],
+  "include": ["src"],
   "exclude": ["test", "**/*.spec.{js,ts}"],
   "compilerOptions": {
     "outDir": "dist",
 
-    "emitDeclarationOnly": false,
     "noEmit": false,
 
     "declaration": true,

@@ -1,12 +1,12 @@
 'use strict';
 
-const EventEmitter = require('events');
+const EventEmitter = require('node:events');
 
 // pcsclite.node is a Node.js native C++ addon that is compiled during installation
 // via node-gyp (see package.json > scripts > install)
 // the build output name and directory is constant so we can require it directly
 // see https://github.com/nodejs/node-gyp/issues/263, https://github.com/nodejs/node-gyp/issues/631
-const pcsclite = require('../build/Release/pcsclite.node');
+const pcsclite = require('#module/pcsclite');
 
 const { PCSCLite, CardReader } = pcsclite;
 

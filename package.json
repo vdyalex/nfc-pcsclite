@@ -1,6 +1,6 @@
 {
   "name": "nfc-pcsclite",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "gypfile": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -40,17 +40,18 @@
   ],
   "scripts": {
     "build": "node-gyp rebuild",
-    "compile": "tsc -p tsconfig.build.json",
+    "compile": "tsup",
     "test": "mocha --exit",
     "prepublishOnly": "doctoc README.md && yarn compile"
   },
+  "imports": {
+    "#module/pcsclite": "./build/Release/pcsclite.node"
+  },
   "files": [
+    "**/*.d.ts",
+    "src",
     "dist",
-    "package/lib/*.js",
-    "package/lib/*.h",
-    "package/lib/*.cpp",
-    "binding.gyp",
-    "**/*.d.js"
+    "binding.gyp"
   ],
   "dependencies": {
     "node-addon-api": "*"
@@ -59,13 +60,14 @@
     "@types/mocha": "^10.0.10",
     "@types/mock-require": "^3.0.0",
     "@types/node": "^18",
+    "@types/sinon": "^17.0.4",
     "doctoc": "^2.2.1",
     "mocha": "^11.7.4",
     "mock-require": "^3.0.3",
     "prettier": "^3.5.3",
-    "should": "^13.2.3",
     "sinon": "^21.0.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
     "typescript": "^5.6.3"
   },
   "peerDependencies": {
@@ -73,15 +75,10 @@
   },
   "mocha": {
     "require": [
-      "ts-node/register",
-      "test/setup.ts"
-    ],
-    "extension": [
-      "js",
-      "ts"
+      "ts-node/register"
     ],
     "spec": [
-      "**/*.spec.{js,ts}"
+      "src/**/*.spec.{js,ts}"
     ]
   }
 }

@@ -1,5 +1,7 @@
-import EventEmitter from 'events';
-import { CardReader } from '../package/pcsclite';
+import EventEmitter from 'node:events';
+import { CardReader } from 'lib:pcsclite';
+
+import type { Nullable } from './utils';
 
 import {
   ConnectError,
