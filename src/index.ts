@@ -1,4 +1,4 @@
-import pcsc from 'pcsclite';
+import pcsc from '../package/pcsclite';
 
 export default pcsc;
 

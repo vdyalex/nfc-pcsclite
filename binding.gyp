@@ -3,9 +3,9 @@
     {
       "target_name": "pcsclite",
       "sources": [
-        "src/addon.cpp",
-        "src/pcsclite.cpp",
-        "src/cardreader.cpp"
+        "package/lib/addon.cpp",
+        "package/lib/pcsclite.cpp",
+        "package/lib/cardreader.cpp"
       ],
       "cflags": [
         "-Wall",

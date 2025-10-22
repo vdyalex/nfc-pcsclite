@@ -3,7 +3,7 @@ const assert = require('assert');
 const { describe, it } = require('mocha');
 const sinon = require('sinon');
 
-const pcsclite = require('../index.js');
+const pcsclite = require('../pcsclite.js');
 
 const runner = (callback) => {
   const pcsc = pcsclite();
