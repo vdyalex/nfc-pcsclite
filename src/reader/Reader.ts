@@ -1,5 +1,10 @@
-import EventEmitter from 'events';
-import { CardReader } from '../package/pcsclite';
+import EventEmitter from 'node:events';
+import { CardReader } from 'lib:pcsclite';
+
+import { Card } from '../Card';
+import { Connection } from '../Connection';
+
+import type { Nullable } from '../utils/utility';
 
 import {
   ConnectError,
@@ -20,11 +25,11 @@ import {
   UNABLE_TO_LOAD_KEY,
   INVALID_DATA_LENGTH,
   INVALID_MODE,
-} from './errors';
-import { defaultLogger, Logger } from './logger';
-import { Card, Connection } from './types';
-import { Standard, TAG_ISO_14443_3, TAG_ISO_14443_4 } from './standard';
-import { CONNECT_MODE_CARD, CONNECT_MODE_DIRECT, Mode } from './mode';
+} from '../errors';
+
+import { defaultLogger, Logger } from '../utils/logger';
+import { CONNECT_MODE_CARD, CONNECT_MODE_DIRECT, Mode } from '../utils/mode';
+import { Standard, TAG_ISO_14443_3, TAG_ISO_14443_4 } from '../utils/standard';
 
 export const KEY_TYPE_A = 0x60;
 export const KEY_TYPE_B = 0x61;

@@ -1,4 +1,5 @@
-import { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
+import type { Maybe, Nullable } from '../utils/utility';
 
 export type ConnectOptions = {
   share_mode?: number;
@@ -13,8 +14,10 @@ export type Status = {
 export interface PCSCLite extends EventEmitter {
   on(type: 'error', listener: (error: any) => void): this;
   once(type: 'error', listener: (error: any) => void): this;
+
   on(type: 'reader', listener: (reader: CardReader) => void): this;
   once(type: 'reader', listener: (reader: CardReader) => void): this;
+
   close(): void;
   readers: Record<string, CardReader>;
 }

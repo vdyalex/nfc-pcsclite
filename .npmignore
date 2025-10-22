@@ -35,6 +35,5 @@ node_modules/
 
 # built Node.js C++ addon (must be build specifically on the target platform,
 # which is done automatically during installation via node-gyp)
-src/
 build/
-test/
+__test__/
