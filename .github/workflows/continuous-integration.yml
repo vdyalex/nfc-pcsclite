@@ -40,7 +40,7 @@ jobs:
       # not defined an install or preinstall script, npm will default the install
       # command to compile using node-gyp.
       - name: Install dependencies
-        run: yarn install --verbose
+        run: yarn install
 
       # Currently running tests only on MacOS
       - name: Run lib tests
