@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { CardReader } from 'pcsclite';
+import { CardReader } from '../package/pcsclite';
 
 import {
   ConnectError,

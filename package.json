@@ -1,6 +1,7 @@
 {
   "name": "nfc-pcsclite",
-  "version": "1.0.0",
+  "version": "1.0.2",
+  "gypfile": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "Easy reading and writing NFC tags and cards with bindings over PC/SC to access Smart Cards",
@@ -38,30 +39,47 @@
     }
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "node-gyp rebuild",
+    "compile": "tsc -p tsconfig.build.json",
     "test": "mocha --exit",
-    "prepublishOnly": "doctoc README.md"
+    "prepublishOnly": "doctoc README.md && yarn compile"
   },
   "files": [
-    "dist"
+    "dist",
+    "package/lib/*.h",
+    "package/lib/*.cpp",
+    "binding.gyp"
   ],
   "dependencies": {
-    "pcsclite": "file:./lib"
+    "node-addon-api": "*"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/mock-require": "^3.0.0",
     "@types/node": "^18",
     "doctoc": "^2.2.1",
-    "mocha": "^11.0.1",
+    "mocha": "^11.7.4",
     "mock-require": "^3.0.3",
     "prettier": "^3.5.3",
     "should": "^13.2.3",
-    "sinon": "^16.0.0",
+    "sinon": "^21.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
   "peerDependencies": {
     "node-gyp": "*"
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register",
+      "test/setup.ts"
+    ],
+    "extension": [
+      "js",
+      "ts"
+    ],
+    "spec": [
+      "**/*.spec.{js,ts}"
+    ]
   }
 }
