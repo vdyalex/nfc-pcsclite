@@ -1,6 +1,6 @@
 {
   "name": "nfc-pcsclite",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "gypfile": true,
   "description": "Easy reading and writing NFC tags and cards with bindings over PC/SC to access Smart Cards",
   "keywords": [
@@ -39,8 +39,7 @@
   "scripts": {
     "build": "node-gyp rebuild",
     "compile": "tsup",
-    "test": "mocha --exit",
-    "prepublishOnly": "doctoc README.md && yarn compile"
+    "test": "mocha --exit"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -49,7 +48,6 @@
   },
   "files": [
     "src",
-    "build",
     "dist",
     "binding.gyp"
   ],
