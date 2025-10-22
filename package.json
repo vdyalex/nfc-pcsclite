@@ -46,9 +46,11 @@
   },
   "files": [
     "dist",
+    "package/lib/*.js",
     "package/lib/*.h",
     "package/lib/*.cpp",
-    "binding.gyp"
+    "binding.gyp",
+    "**/*.d.js"
   ],
   "dependencies": {
     "node-addon-api": "*"
