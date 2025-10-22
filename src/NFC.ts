@@ -1,11 +1,11 @@
 import EventEmitter from 'node:events';
 import pcsclite, { CardReader, PCSCLite } from 'lib:pcsclite';
 
-import Reader from './Reader';
-import ACR122Reader from './ACR122Reader';
+import Reader from './reader/Reader';
+import ACR122Reader from './reader/ACR122Reader';
 
-import { defaultLogger, Logger } from './logger';
-import { DEVICE_ACR1252U, DEVICE_ARC122U } from './devices';
+import { DEVICE_ACR1252U, DEVICE_ARC122U } from './utils/device';
+import { defaultLogger, Logger } from './utils/logger';
 
 class NFC extends EventEmitter {
   pcsc: PCSCLite | null = null;

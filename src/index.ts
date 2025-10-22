@@ -3,14 +3,14 @@ import pcsc from 'lib:pcsclite';
 export default pcsc;
 
 export { default as NFC } from './NFC';
+export { default as Reader, KEY_TYPE_A, KEY_TYPE_B } from './reader/Reader';
+export { default as ACR122Reader } from './reader/ACR122Reader';
 
-export { TAG_ISO_14443_3, TAG_ISO_14443_4 } from './standard';
-export { CONNECT_MODE_CARD, CONNECT_MODE_DIRECT } from './mode';
-export { Connection, Card } from './types';
+export { Card } from './Card';
+export { Connection } from './Connection';
 
-export { default as Reader, KEY_TYPE_A, KEY_TYPE_B } from './Reader';
-
-export { default as ACR122Reader } from './ACR122Reader';
+export { TAG_ISO_14443_3, TAG_ISO_14443_4 } from './utils/standard';
+export { CONNECT_MODE_CARD, CONNECT_MODE_DIRECT } from './utils/mode';
 
 export {
   FAILURE,

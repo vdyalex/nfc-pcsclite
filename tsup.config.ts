@@ -10,7 +10,7 @@ export default defineConfig({
   clean: true,
 
   // Module settings
-  format: ['cjs', 'esm'],
+  format: ['cjs'],
   target: 'node18',
   skipNodeModulesBundle: true,
 

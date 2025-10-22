@@ -1,5 +1,5 @@
 {
-  "include": ["src", "src/test"],
+  "include": ["src"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "*.d.ts"],
 
     "paths": {
       "lib:*": ["./src/lib/*"]
