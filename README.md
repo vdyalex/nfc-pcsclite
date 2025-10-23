@@ -205,11 +205,11 @@ Yes. You’ll need to update your `package.json` and `webpack.config.js` per [th
 
 ### Do I need Babel?
 
-No. The library is already transpiled to support Node.js 18+.
+No. The library is already transpiled to support Node.js 16+.
 
 ### Supported Node.js versions
 
-`18.x`, `20.x`, `22.x`
+`16.x`, `18.x`, `20.x`, `22.x`
 
 ### Can I read NDEF tags?
 
