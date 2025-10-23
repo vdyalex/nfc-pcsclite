@@ -1,6 +1,6 @@
 {
   "name": "nfc-pcsclite",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "gypfile": true,
   "description": "Easy reading and writing NFC tags and cards with bindings over PC/SC to access Smart Cards",
   "keywords": [
