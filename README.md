@@ -65,7 +65,7 @@ It supports automatic card detection, UID reading, and communication with **Andr
 
 #### Node.js
 
-Compatible with **Node.js 14 or newer**.
+Compatible with **Node.js 18 or newer**.
 
 #### Build tools
 
