@@ -209,7 +209,9 @@ No. The library is already transpiled to support Node.js 18+.
 
 ### Supported Node.js versions
 
-It supports from the version `18.x` to the latest `25.x`, including the current LTS on `22.x`.
+It supports from the version `18.x` to the latest `25.x`, including the current LTS on `22.x`. Node.js uses the convention of having the even-numbered versions as stable releases and odd-numbered versions having experimental features, but even and odd-numbered version numbers are basically backwards compatible.
+
+Ref: https://github.com/nodejs/Release?tab=readme-ov-file#release-plan
 
 ### Can I read NDEF tags?
 
