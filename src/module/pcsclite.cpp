@@ -31,29 +31,7 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   assert(uv_mutex_init(&m_mutex) == 0);
   assert(uv_cond_init(&m_cond) == 0);
 
-#ifdef _WIN32
-  // Attempt to start the Smart Card service without blocking
-  SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICE);
-  if (scm)
-  {
-    SC_HANDLE service = OpenService(scm, "SCardSvr", SERVICE_START);
-    if (service)
-    {
-      StartService(service, 0, NULL);
-      CloseServiceHandle(service);
-    }
-    else
-    {
-      Napi::Error::New(env, error_msg("SCardEstablishContext", 0)).ThrowAsJavaScriptException();
-    }
-
-    CloseServiceHandle(scm);
-  }
-  else
-  {
-    Napi::Error::New(env, error_msg("SCardEstablishContext", 0)).ThrowAsJavaScriptException();
-  }
-#endif
+  PCSCLite::ConfigureService();
 
   LONG result;
   // TODO: consider removing this do-while Windows workaround that should not be needed anymore
@@ -108,6 +86,52 @@ PCSCLite::~PCSCLite()
 
   uv_cond_destroy(&m_cond);
   uv_mutex_destroy(&m_mutex);
+}
+
+void PCSCLite::ConfigureService()
+{
+#ifdef _WIN32
+  HKEY hKey;
+  DWORD startStatus, datacb = sizeof(DWORD);
+  LONG registry = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services\\SCardSvr", 0, KEY_READ, &hKey);
+
+  if (registry != ERROR_SUCCESS)
+  {
+    printf("Reg Open Key exited with %ld\n", registry);
+    return;
+  }
+
+  registry = RegQueryValueEx(hKey, "Start", NULL, NULL, (LPBYTE)&startStatus, &datacb);
+
+  if (registry != ERROR_SUCCESS)
+  {
+    printf("Reg Query Value exited with %ld\n", registry);
+    return;
+  }
+
+  if (startStatus != 2)
+  {
+    SHELLEXECUTEINFO shell = {0};
+    shell.cbSize = sizeof(SHELLEXECUTEINFO);
+    shell.fMask = SEE_MASK_NOCLOSEPROCESS;
+    shell.hwnd = NULL;
+    shell.lpVerb = "runas";
+    shell.lpFile = "sc.exe";
+    shell.lpParameters = "config SCardSvr start=auto";
+    shell.lpDirectory = NULL;
+    shell.nShow = SW_SHOWNORMAL;
+    shell.hInstApp = NULL;
+
+    if (!ShellExecuteEx(&shell))
+    {
+      printf("Shell Execute failed with %ld\n", GetLastError());
+      return;
+    }
+
+    WaitForSingleObject(shell.hProcess, INFINITE);
+    CloseHandle(shell.hProcess);
+  }
+#endif
 }
 
 Napi::Value PCSCLite::Start(const Napi::CallbackInfo &info)

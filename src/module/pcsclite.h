@@ -52,6 +52,7 @@ private:
   static void HandleReaderStatusChange(uv_async_t *handle);
   static void HandlerFunction(void *arg);
   static void CloseCallback(uv_handle_t *handle);
+  static void ConfigureService();
 
   static LONG get_card_readers(PCSCLite *pcsclite, AsyncResult *async_result);
 
