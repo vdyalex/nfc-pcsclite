@@ -91,8 +91,9 @@ PCSCLite::~PCSCLite()
 void PCSCLite::ConfigureService()
 {
 #ifdef _WIN32
-  HKEY hKey;
   DWORD startStatus, datacb = sizeof(DWORD);
+  HKEY hKey;
+
   LONG registry = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services\\SCardSvr", 0, KEY_READ, &hKey);
 
   if (registry != ERROR_SUCCESS)
@@ -109,7 +110,7 @@ void PCSCLite::ConfigureService()
     return;
   }
 
-  if (startStatus != 2)
+  if (startStatus != SERVICE_AUTO_START)
   {
     SHELLEXECUTEINFO shell = {0};
     shell.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -131,6 +132,8 @@ void PCSCLite::ConfigureService()
     WaitForSingleObject(shell.hProcess, INFINITE);
     CloseHandle(shell.hProcess);
   }
+
+  RegCloseKey(hKey);
 #endif
 }
 
