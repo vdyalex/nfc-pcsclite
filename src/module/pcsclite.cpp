@@ -120,7 +120,7 @@ void PCSCLite::ConfigureService()
     shell.lpFile = "sc.exe";
     shell.lpParameters = "config SCardSvr start=auto";
     shell.lpDirectory = NULL;
-    shell.nShow = SW_SHOWNORMAL;
+    shell.nShow = SW_HIDE;
     shell.hInstApp = NULL;
 
     if (!ShellExecuteEx(&shell))
