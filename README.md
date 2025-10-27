@@ -209,7 +209,7 @@ No. The library is already transpiled to support Node.js 18+.
 
 ### Supported Node.js versions
 
-`18.x`, `20.x`, `22.x`
+`18.x`, `20.x`, `22.x`, `24.x`
 
 ### Can I read NDEF tags?
 
