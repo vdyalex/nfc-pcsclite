@@ -1,7 +1,6 @@
 #include "pcsclite.h"
 #include "common.h"
 
-#include <iostream>
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -39,16 +38,14 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   do
   {
     // TODO: make dwScope (now hard-coded to SCARD_SCOPE_SYSTEM) customisable
-    result = SCardEstablishContext(SCARD_SCOPE_SYSTEM,
-                                   NULL,
-                                   NULL,
-                                   &m_card_context);
+    result = (LONG)SCardEstablishContext(SCARD_SCOPE_SYSTEM,
+                                         NULL,
+                                         NULL,
+                                         &m_card_context);
     Sleep(100);
   } while (
       result == (LONG)SCARD_E_NO_SERVICE ||
       result == (LONG)SCARD_E_SERVICE_STOPPED);
-
-  std::cout << "Current status: 0x" << std::hex << result << std::endl;
 
   if (result != (LONG)SCARD_S_SUCCESS)
   {
@@ -58,10 +55,10 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   {
     m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
     m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
-    result = SCardGetStatusChange(m_card_context,
-                                  0,
-                                  &m_card_reader_state,
-                                  1);
+    result = (LONG)SCardGetStatusChange(m_card_context,
+                                        0,
+                                        &m_card_reader_state,
+                                        1);
 
     if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
     {
@@ -188,7 +185,7 @@ Napi::Value PCSCLite::Close(const Napi::CallbackInfo &info)
         m_state = 1;
         do
         {
-          result = SCardCancel(m_card_context);
+          result = (LONG)SCardCancel(m_card_context);
           ret = uv_cond_timedwait(&m_cond, &m_mutex, 10000000);
         } while ((ret != 0) && (++times < 5));
       }
@@ -298,10 +295,10 @@ void PCSCLite::HandlerFunction(void *arg)
         pcsclite->m_card_reader_state.dwCurrentState =
             pcsclite->m_card_reader_state.dwEventState;
         /* Start checking for status change */
-        result = SCardGetStatusChange(pcsclite->m_card_context,
-                                      pcsclite->m_timeout_ms,
-                                      &pcsclite->m_card_reader_state,
-                                      1);
+        result = (LONG)SCardGetStatusChange(pcsclite->m_card_context,
+                                            pcsclite->m_timeout_ms,
+                                            &pcsclite->m_card_reader_state,
+                                            1);
 
         uv_mutex_lock(&pcsclite->m_mutex);
         async_baton->async_result->result = result;
@@ -363,25 +360,25 @@ LONG PCSCLite::get_card_readers(PCSCLite *pcsclite, AsyncResult *async_result)
 
 #ifdef SCARD_AUTOALLOCATE
   readers_name_length = SCARD_AUTOALLOCATE;
-  result = SCardListReaders(pcsclite->m_card_context,
-                            NULL,
-                            (LPTSTR)&readers_name,
-                            &readers_name_length);
+  result = (LONG)SCardListReaders(pcsclite->m_card_context,
+                                  NULL,
+                                  (LPTSTR)&readers_name,
+                                  &readers_name_length);
 #else
-  result = SCardListReaders(pcsclite->m_card_context,
-                            NULL,
-                            NULL,
-                            &readers_name_length);
+  result = (LONG)SCardListReaders(pcsclite->m_card_context,
+                                  NULL,
+                                  NULL,
+                                  &readers_name_length);
   if (result != (LONG)SCARD_S_SUCCESS)
   {
     return result;
   }
 
   readers_name = new char[readers_name_length];
-  result = SCardListReaders(pcsclite->m_card_context,
-                            NULL,
-                            readers_name,
-                            &readers_name_length);
+  result = (LONG)SCardListReaders(pcsclite->m_card_context,
+                                  NULL,
+                                  readers_name,
+                                  &readers_name_length);
 #endif
 
   if (result != (LONG)SCARD_S_SUCCESS)

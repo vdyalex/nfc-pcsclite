@@ -312,7 +312,7 @@ Napi::Value CardReader::Close(const Napi::CallbackInfo &info)
       m_state = 1;
       do
       {
-        result = SCardCancel(m_status_card_context);
+        result = (LONG)SCardCancel(m_status_card_context);
         ret = uv_cond_timedwait(&m_cond, &m_mutex, 10000000);
       } while ((ret != 0) && (++times < 5));
     }
@@ -393,7 +393,7 @@ void CardReader::HandlerFunction(void *arg)
   async_baton->async_result = new AsyncResult();
   async_baton->async_result->do_exit = false;
 
-  LONG result = SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &reader->m_status_card_context);
+  LONG result = (LONG)SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &reader->m_status_card_context);
 
   SCARD_READERSTATE card_reader_state = SCARD_READERSTATE();
   card_reader_state.szReader = reader->m_name.c_str();
@@ -401,7 +401,7 @@ void CardReader::HandlerFunction(void *arg)
 
   while (!reader->m_state)
   {
-    result = SCardGetStatusChange(reader->m_status_card_context, INFINITE, &card_reader_state, 1);
+    result = (LONG)SCardGetStatusChange(reader->m_status_card_context, INFINITE, &card_reader_state, 1);
 
     uv_mutex_lock(&reader->m_mutex);
     if (reader->m_state == 1)
@@ -445,28 +445,28 @@ void CardReader::DoConnect(uv_work_t *req)
   uv_mutex_lock(&obj->m_mutex);
   if (!obj->m_card_context)
   {
-    result = SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &obj->m_card_context);
+    result = (LONG)SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &obj->m_card_context);
   }
 
   if (result == (LONG)SCARD_S_SUCCESS)
   {
-    result = SCardConnect(obj->m_card_context,
-                          obj->m_name.c_str(),
-                          ci->share_mode,
-                          ci->pref_protocol,
-                          &obj->m_card_handle,
-                          &card_protocol);
+    result = (LONG)SCardConnect(obj->m_card_context,
+                                obj->m_name.c_str(),
+                                ci->share_mode,
+                                ci->pref_protocol,
+                                &obj->m_card_handle,
+                                &card_protocol);
   }
 
   if (result == (LONG)SCARD_S_SUCCESS)
   {
-    result = SCardStatus(obj->m_card_handle,
-                         NULL,
-                         NULL,
-                         NULL,
-                         &card_protocol,
-                         NULL,
-                         NULL);
+    result = (LONG)SCardStatus(obj->m_card_handle,
+                               NULL,
+                               NULL,
+                               NULL,
+                               &card_protocol,
+                               NULL,
+                               NULL);
   }
 
   uv_mutex_unlock(&obj->m_mutex);
@@ -575,13 +575,13 @@ void CardReader::DoTransmit(uv_work_t *req)
   if (obj->m_card_handle)
   {
     SCARD_IO_REQUEST send_pci = {ti->card_protocol, sizeof(SCARD_IO_REQUEST)};
-    result = SCardTransmit(obj->m_card_handle,
-                           &send_pci,
-                           ti->in_data,
-                           ti->in_len,
-                           NULL,
-                           tr->data,
-                           &tr->len);
+    result = (LONG)SCardTransmit(obj->m_card_handle,
+                                 &send_pci,
+                                 ti->in_data,
+                                 ti->in_len,
+                                 NULL,
+                                 tr->data,
+                                 &tr->len);
   }
   uv_mutex_unlock(&obj->m_mutex);
 
@@ -634,13 +634,13 @@ void CardReader::DoControl(uv_work_t *req)
   uv_mutex_lock(&obj->m_mutex);
   if (obj->m_card_handle)
   {
-    result = SCardControl(obj->m_card_handle,
-                          ci->control_code,
-                          ci->in_data,
-                          ci->in_len,
-                          ci->out_data,
-                          ci->out_len,
-                          &cr->len);
+    result = (LONG)SCardControl(obj->m_card_handle,
+                                ci->control_code,
+                                ci->in_data,
+                                ci->in_len,
+                                ci->out_data,
+                                ci->out_len,
+                                &cr->len);
   }
   uv_mutex_unlock(&obj->m_mutex);
 
