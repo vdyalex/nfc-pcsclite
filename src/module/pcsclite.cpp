@@ -51,24 +51,20 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   {
     Napi::Error::New(env, error_msg("SCardEstablishContext", result)).ThrowAsJavaScriptException();
   }
-  else
-  {
-    m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
-    m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
-    result = (LONG)SCardGetStatusChange(m_card_context,
-                                        0,
-                                        &m_card_reader_state,
-                                        1);
 
-    if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
-    {
-      Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
-    }
-    else
-    {
-      m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
-    }
+  m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
+  m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
+  result = (LONG)SCardGetStatusChange(m_card_context,
+                                      0,
+                                      &m_card_reader_state,
+                                      1);
+
+  if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
+  {
+    Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
   }
+
+  m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
 }
 
 PCSCLite::~PCSCLite()
