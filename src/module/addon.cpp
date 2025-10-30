@@ -10,4 +10,13 @@ Napi::Object InitAll(Napi::Env env, Napi::Object exports)
   return exports;
 }
 
-NODE_API_MODULE(pcsclite, InitAll);
+#if defined(NAPI_VERSION) && NAPI_VERSION >= 8
+NAPI_MODULE_INIT()
+{
+  Napi::Env napiEnv(env);
+  Napi::Object napiExports(env, exports);
+  return InitAll(napiEnv, napiExports);
+}
+#else
+NODE_API_MODULE(pcsclite, InitAll)
+#endif
