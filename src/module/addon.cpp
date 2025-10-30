@@ -10,4 +10,7 @@ Napi::Object InitAll(Napi::Env env, Napi::Object exports)
   return exports;
 }
 
-NODE_API_MODULE(pcsclite, InitAll);
+NAPI_MODULE_INIT()
+{
+  return InitAll(env, exports);
+}
