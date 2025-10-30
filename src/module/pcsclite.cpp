@@ -1,6 +1,7 @@
 #include "pcsclite.h"
 #include "common.h"
 
+#include <iostream>
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -46,6 +47,8 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   } while (
       result == (LONG)SCARD_E_NO_SERVICE ||
       result == (LONG)SCARD_E_SERVICE_STOPPED);
+
+  std::cout << "Current status: 0x" << std::hex << result << std::endl;
 
   if (result != (LONG)SCARD_S_SUCCESS)
   {
