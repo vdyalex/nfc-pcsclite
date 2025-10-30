@@ -3,7 +3,6 @@
 
 #include <napi.h>
 #include <uv.h>
-#include <node_version.h>
 #include <string>
 
 #ifdef __APPLE__
