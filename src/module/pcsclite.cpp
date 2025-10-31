@@ -67,7 +67,7 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
 
     if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
     {
-      Napi::Error::New(env, error_msg("SCardGetStatusChange 3", result)).ThrowAsJavaScriptException();
+      Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
     }
     else
     {
