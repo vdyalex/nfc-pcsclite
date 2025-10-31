@@ -49,23 +49,25 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   if (result != (LONG)SCARD_S_SUCCESS)
   {
     Napi::Error::New(env, error_msg("SCardEstablishContext", result)).ThrowAsJavaScriptException();
-    return;
   }
-
-  m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
-  m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
-  result = (LONG)SCardGetStatusChange(m_card_context,
-                                      0,
-                                      &m_card_reader_state,
-                                      1);
-
-  if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
+  else
   {
-    Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
-    return;
-  }
+    m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
+    m_card_reader_state.dwCurrentState = SCARD_STATE_UNAWARE;
+    result = (LONG)SCardGetStatusChange(m_card_context,
+                                        0,
+                                        &m_card_reader_state,
+                                        1);
 
-  m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
+    if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
+    {
+      Napi::Error::New(env, error_msg("SCardGetStatusChange 3", result)).ThrowAsJavaScriptException();
+    }
+    else
+    {
+      m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
+    }
+  }
 }
 
 PCSCLite::~PCSCLite()
@@ -296,8 +298,16 @@ void PCSCLite::HandlerFunction(void *arg)
 
         if (result != (LONG)SCARD_S_SUCCESS)
         {
-          pcsclite->m_state = 2;
-          async_baton->async_result->err_msg = error_msg("SCardGetStatusChange", result);
+          if (result == (LONG)SCARD_E_CANCELLED)
+          {
+            // Graceful shutdown triggered by Close()
+            pcsclite->m_state = 1;
+          }
+          else
+          {
+            pcsclite->m_state = 2;
+            async_baton->async_result->err_msg = error_msg("SCardGetStatusChange", result);
+          }
         }
 
         uv_mutex_unlock(&pcsclite->m_mutex);
