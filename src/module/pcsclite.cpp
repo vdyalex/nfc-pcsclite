@@ -23,8 +23,7 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
       m_card_reader_state(),
       m_status_thread(0),
       m_pnp(false),
-      m_state(0),
-      m_timeout_ms(5000)
+      m_state(0)
 {
   Napi::Env env = info.Env();
 
@@ -50,6 +49,7 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   if (result != (LONG)SCARD_S_SUCCESS)
   {
     Napi::Error::New(env, error_msg("SCardEstablishContext", result)).ThrowAsJavaScriptException();
+    return;
   }
 
   m_card_reader_state.szReader = "\\\\?PnP?\\Notification";
@@ -62,6 +62,7 @@ PCSCLite::PCSCLite(const Napi::CallbackInfo &info)
   if (result != (LONG)SCARD_S_SUCCESS && result != (LONG)SCARD_E_TIMEOUT)
   {
     Napi::Error::New(env, error_msg("SCardGetStatusChange", result)).ThrowAsJavaScriptException();
+    return;
   }
 
   m_pnp = !(m_card_reader_state.dwEventState & SCARD_STATE_UNKNOWN);
@@ -141,16 +142,6 @@ Napi::Value PCSCLite::Start(const Napi::CallbackInfo &info)
   {
     Napi::TypeError::New(env, "First argument must be a callback function").ThrowAsJavaScriptException();
     return env.Undefined();
-  }
-
-  if (info.Length() >= 2 && info[1].IsNumber())
-  {
-    m_timeout_ms = info[1].As<Napi::Number>().Uint32Value();
-  }
-  else
-  {
-    // Default timeout of 5 seconds
-    m_timeout_ms = 5000;
   }
 
   Napi::Function cb = info[0].As<Napi::Function>();
@@ -292,7 +283,7 @@ void PCSCLite::HandlerFunction(void *arg)
             pcsclite->m_card_reader_state.dwEventState;
         /* Start checking for status change */
         result = (LONG)SCardGetStatusChange(pcsclite->m_card_context,
-                                            pcsclite->m_timeout_ms,
+                                            INFINITE,
                                             &pcsclite->m_card_reader_state,
                                             1);
 

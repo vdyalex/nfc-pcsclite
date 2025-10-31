@@ -40,7 +40,7 @@ function diff(a, b) {
   });
 }
 
-module.exports = function (timeout) {
+module.exports = function () {
   const readers = {};
 
   const pcsc = new PCSCLite();
@@ -91,7 +91,7 @@ module.exports = function (timeout) {
       removedNames.forEach(function (name) {
         readers[name].close();
       });
-    }, timeout);
+    });
   });
 
   return pcsc;

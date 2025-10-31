@@ -103,6 +103,6 @@ export interface CardReader extends EventEmitter {
   close(): void;
 }
 
-declare function pcsc(timeout?: number): PCSCLite;
+declare function pcsc(): PCSCLite;
 
 export = pcsc;

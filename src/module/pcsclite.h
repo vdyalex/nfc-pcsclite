@@ -64,7 +64,6 @@ private:
   uv_cond_t m_cond;
   bool m_pnp;
   int m_state;
-  DWORD m_timeout_ms;
 };
 
 #endif /* PCSCLITE_H */
