@@ -13,39 +13,39 @@ void CardReader::init(Napi::Env env, Napi::Object target)
       env,
       "CardReader",
       {
-          InstanceMethod("get_status", &CardReader::GetStatus),   // CardReader::GetStatus
-          InstanceMethod("_connect", &CardReader::Connect),       // CardReader::Connect
-          InstanceMethod("_disconnect", &CardReader::Disconnect), // CardReader::Disconnect
-          InstanceMethod("_transmit", &CardReader::Transmit),     // CardReader::Transmit
-          InstanceMethod("_control", &CardReader::Control),       // CardReader::Control
-          InstanceMethod("close", &CardReader::Close),            // CardReader::Close
+          InstanceMethod("get_status", &CardReader::GetStatus),
+          InstanceMethod("_connect", &CardReader::Connect),
+          InstanceMethod("_disconnect", &CardReader::Disconnect),
+          InstanceMethod("_transmit", &CardReader::Transmit),
+          InstanceMethod("_control", &CardReader::Control),
+          InstanceMethod("close", &CardReader::Close),
 
-          InstanceValue("IOCTL_CCID_ESCAPE", Napi::Number::New(env, IOCTL_CCID_ESCAPE), napi_enumerable), // CardReader::IOCTL_CCID_ESCAPE
+          InstanceValue("IOCTL_CCID_ESCAPE", Napi::Number::New(env, IOCTL_CCID_ESCAPE), napi_enumerable),
 
-          InstanceValue("SCARD_PROTOCOL_RAW", Napi::Number::New(env, SCARD_PROTOCOL_RAW), napi_enumerable), // CardReader::SCARD_PROTOCOL_RAW
-          InstanceValue("SCARD_PROTOCOL_T0", Napi::Number::New(env, SCARD_PROTOCOL_T0), napi_enumerable),   // CardReader::SCARD_PROTOCOL_T0
-          InstanceValue("SCARD_PROTOCOL_T1", Napi::Number::New(env, SCARD_PROTOCOL_T1), napi_enumerable),   // CardReader::SCARD_PROTOCOL_T1
+          InstanceValue("SCARD_PROTOCOL_RAW", Napi::Number::New(env, SCARD_PROTOCOL_RAW), napi_enumerable),
+          InstanceValue("SCARD_PROTOCOL_T0", Napi::Number::New(env, SCARD_PROTOCOL_T0), napi_enumerable),
+          InstanceValue("SCARD_PROTOCOL_T1", Napi::Number::New(env, SCARD_PROTOCOL_T1), napi_enumerable),
 
-          InstanceValue("SCARD_SHARE_DIRECT", Napi::Number::New(env, SCARD_SHARE_DIRECT), napi_enumerable),       // CardReader::SCARD_SHARE_DIRECT
-          InstanceValue("SCARD_SHARE_EXCLUSIVE", Napi::Number::New(env, SCARD_SHARE_EXCLUSIVE), napi_enumerable), // CardReader::SCARD_SHARE_EXCLUSIVE
-          InstanceValue("SCARD_SHARE_SHARED", Napi::Number::New(env, SCARD_SHARE_SHARED), napi_enumerable),       // CardReader::SCARD_SHARE_SHARED
+          InstanceValue("SCARD_SHARE_DIRECT", Napi::Number::New(env, SCARD_SHARE_DIRECT), napi_enumerable),
+          InstanceValue("SCARD_SHARE_EXCLUSIVE", Napi::Number::New(env, SCARD_SHARE_EXCLUSIVE), napi_enumerable),
+          InstanceValue("SCARD_SHARE_SHARED", Napi::Number::New(env, SCARD_SHARE_SHARED), napi_enumerable),
 
-          InstanceValue("SCARD_STATE_ATRMATCH", Napi::Number::New(env, SCARD_STATE_ATRMATCH), napi_enumerable),       // CardReader::SCARD_STATE_ATRMATCH
-          InstanceValue("SCARD_STATE_CHANGED", Napi::Number::New(env, SCARD_STATE_CHANGED), napi_enumerable),         // CardReader::SCARD_STATE_CHANGED
-          InstanceValue("SCARD_STATE_EMPTY", Napi::Number::New(env, SCARD_STATE_EMPTY), napi_enumerable),             // CardReader::SCARD_STATE_EMPTY
-          InstanceValue("SCARD_STATE_EXCLUSIVE", Napi::Number::New(env, SCARD_STATE_EXCLUSIVE), napi_enumerable),     // CardReader::SCARD_STATE_EXCLUSIVE
-          InstanceValue("SCARD_STATE_IGNORE", Napi::Number::New(env, SCARD_STATE_IGNORE), napi_enumerable),           // CardReader::SCARD_STATE_IGNORE
-          InstanceValue("SCARD_STATE_INUSE", Napi::Number::New(env, SCARD_STATE_INUSE), napi_enumerable),             // CardReader::SCARD_STATE_INUSE
-          InstanceValue("SCARD_STATE_MUTE", Napi::Number::New(env, SCARD_STATE_MUTE), napi_enumerable),               // CardReader::SCARD_STATE_MUTE
-          InstanceValue("SCARD_STATE_PRESENT", Napi::Number::New(env, SCARD_STATE_PRESENT), napi_enumerable),         // CardReader::SCARD_STATE_PRESENT
-          InstanceValue("SCARD_STATE_UNAVAILABLE", Napi::Number::New(env, SCARD_STATE_UNAVAILABLE), napi_enumerable), // CardReader::SCARD_STATE_UNAVAILABLE
-          InstanceValue("SCARD_STATE_UNAWARE", Napi::Number::New(env, SCARD_STATE_UNAWARE), napi_enumerable),         // CardReader::SCARD_STATE_UNAWARE
-          InstanceValue("SCARD_STATE_UNKNOWN", Napi::Number::New(env, SCARD_STATE_UNKNOWN), napi_enumerable),         // CardReader::SCARD_STATE_UNKNOWN
+          InstanceValue("SCARD_STATE_ATRMATCH", Napi::Number::New(env, SCARD_STATE_ATRMATCH), napi_enumerable),
+          InstanceValue("SCARD_STATE_CHANGED", Napi::Number::New(env, SCARD_STATE_CHANGED), napi_enumerable),
+          InstanceValue("SCARD_STATE_EMPTY", Napi::Number::New(env, SCARD_STATE_EMPTY), napi_enumerable),
+          InstanceValue("SCARD_STATE_EXCLUSIVE", Napi::Number::New(env, SCARD_STATE_EXCLUSIVE), napi_enumerable),
+          InstanceValue("SCARD_STATE_IGNORE", Napi::Number::New(env, SCARD_STATE_IGNORE), napi_enumerable),
+          InstanceValue("SCARD_STATE_INUSE", Napi::Number::New(env, SCARD_STATE_INUSE), napi_enumerable),
+          InstanceValue("SCARD_STATE_MUTE", Napi::Number::New(env, SCARD_STATE_MUTE), napi_enumerable),
+          InstanceValue("SCARD_STATE_PRESENT", Napi::Number::New(env, SCARD_STATE_PRESENT), napi_enumerable),
+          InstanceValue("SCARD_STATE_UNAVAILABLE", Napi::Number::New(env, SCARD_STATE_UNAVAILABLE), napi_enumerable),
+          InstanceValue("SCARD_STATE_UNAWARE", Napi::Number::New(env, SCARD_STATE_UNAWARE), napi_enumerable),
+          InstanceValue("SCARD_STATE_UNKNOWN", Napi::Number::New(env, SCARD_STATE_UNKNOWN), napi_enumerable),
 
-          InstanceValue("SCARD_EJECT_CARD", Napi::Number::New(env, SCARD_EJECT_CARD), napi_enumerable),     // CardReader::SCARD_EJECT_CARD
-          InstanceValue("SCARD_LEAVE_CARD", Napi::Number::New(env, SCARD_LEAVE_CARD), napi_enumerable),     // CardReader::SCARD_LEAVE_CARD
-          InstanceValue("SCARD_RESET_CARD", Napi::Number::New(env, SCARD_RESET_CARD), napi_enumerable),     // CardReader::SCARD_RESET_CARD
-          InstanceValue("SCARD_UNPOWER_CARD", Napi::Number::New(env, SCARD_UNPOWER_CARD), napi_enumerable), // CardReader::SCARD_UNPOWER_CARD
+          InstanceValue("SCARD_EJECT_CARD", Napi::Number::New(env, SCARD_EJECT_CARD), napi_enumerable),
+          InstanceValue("SCARD_LEAVE_CARD", Napi::Number::New(env, SCARD_LEAVE_CARD), napi_enumerable),
+          InstanceValue("SCARD_RESET_CARD", Napi::Number::New(env, SCARD_RESET_CARD), napi_enumerable),
+          InstanceValue("SCARD_UNPOWER_CARD", Napi::Number::New(env, SCARD_UNPOWER_CARD), napi_enumerable),
       });
 
   constructor = Napi::Persistent(func);
