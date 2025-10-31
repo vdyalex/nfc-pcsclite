@@ -36,9 +36,14 @@ describe('Smoke', () => {
     assert.ok(nfc instanceof NFC);
   });
 
-  it('should call close when invoked', () => {
+  it('should gracefully fail when invoking close', () => {
     const nfc = new NFC();
-    nfc.close();
-    assert.ok(mocked.close.calledOnce);
+
+    try {
+      nfc.close();
+      assert.equal(mocked.close.calledOnce, true);
+    } catch (error) {
+      assert.fail('close threw an unexpected error');
+    }
   });
 });
