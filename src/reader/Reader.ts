@@ -808,6 +808,7 @@ class Reader extends EventEmitter {
   }
 
   close() {
+    this.removeAllListeners();
     this.reader.close();
   }
 

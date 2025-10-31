@@ -56,6 +56,7 @@ class NFC extends EventEmitter {
 
   close() {
     if (this.pcsc) {
+      this.removeAllListeners();
       this.pcsc.close();
     }
   }

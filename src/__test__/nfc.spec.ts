@@ -42,8 +42,23 @@ describe('Smoke', () => {
     try {
       nfc.close();
       assert.equal(mocked.close.calledOnce, true);
-    } catch (error) {
-      assert.fail('close threw an unexpected error');
+    } catch (exception) {
+      assert.equal(exception, 'close threw an unexpected error');
     }
+  });
+
+  it('should remove all listeners when invoking close', () => {
+    const nfc = new NFC();
+
+    nfc.on('reader', console.log);
+    nfc.on('error', console.error);
+
+    assert.equal(nfc.listenerCount('reader'), 1);
+    assert.equal(nfc.listenerCount('error'), 1);
+
+    nfc.close();
+
+    assert.equal(nfc.listenerCount('reader'), 0);
+    assert.equal(nfc.listenerCount('error'), 0);
   });
 });

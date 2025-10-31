@@ -10,7 +10,13 @@ Napi::FunctionReference PCSCLite::constructor;
 
 void PCSCLite::init(Napi::Env env, Napi::Object target)
 {
-  Napi::Function tpl = DefineClass(env, "PCSCLite", {InstanceMethod("start", &PCSCLite::Start), InstanceMethod("close", &PCSCLite::Close)});
+  Napi::Function tpl = DefineClass(
+      env,
+      "PCSCLite",
+      {
+          InstanceMethod("start", &PCSCLite::Start),
+          InstanceMethod("close", &PCSCLite::Close),
+      });
 
   constructor = Napi::Persistent(tpl);
   constructor.SuppressDestruct();
